@@ -38,17 +38,20 @@ def alumno_page():
 def alumno_exist():
     """
     - GET: /api/alumno_exist?dni=1234
-    - POST: JSON body { "dni": "1234" }
+    - POST: form-encoded or JSON body with { "dni": "1234" }
     Requiere usuario autenticado (sigue el estilo de las acciones en el repo).
     """
     dni = None
 
-    if request.method == "GET":
-        dni = request.query.get("dni")
-    else:
-        j = request.json if hasattr(request, "json") else None
+    # request.params incluirá querystring y form-encoded POST
+    if hasattr(request, 'params'):
+        dni = request.params.get('dni')
+
+    # si no está en params (por ejemplo JSON POST), intentar request.json
+    if not dni:
+        j = request.json if hasattr(request, 'json') else None
         if j:
-            dni = j.get("dni")
+            dni = j.get('dni')
 
     if not dni:
         return {"error": "dni is required"}

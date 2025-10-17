@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Buscar Alumno por DNI</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 1.5rem; }
+    input { padding: 0.4rem; margin-right: 0.5rem; }
+    button { padding: 0.4rem 0.6rem; }
+    #resultado { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Buscar Alumno por DNI</h1>
+  <input id="dni" placeholder="Ingrese DNI" />
+  <button id="buscar">Buscar</button>
+
+  <div id="resultado"></div>
+
+  <script>
+    async function buscarPorDni(dni) {
+      const resp = await fetch('/api/alumno_exist?dni=' + encodeURIComponent(dni), { credentials: 'same-origin' });
+      return await resp.json();
+    }
+
+    document.getElementById('buscar').onclick = async function() {
+      const dni = document.getElementById('dni').value.trim();
+      if (!dni) {
+        document.getElementById('resultado').innerText = 'Ingrese un DNI';
+        return;
+      }
+      try {
+        const data = await buscarPorDni(dni);
+        if (data.error) {
+          document.getElementById('resultado').innerText = 'Error: ' + data.error;
+        } else if (data.exists) {
+          const a = data.alumno;
+          document.getElementById('resultado').innerText =
+            'Encontrado: ' + (a.nombre || '') + ' ' + (a.apellido || '') + ' (DNI: ' + a.dni + ')';
+        } else {
+          document.getElementById('resultado').innerText = 'No existe alumno con ese DNI';
+        }
+      } catch (e) {
+        document.getElementById('resultado').innerText = 'Error en la petición: ' + e;
+      }
+    };
+  </script>
+</body>
+</html>

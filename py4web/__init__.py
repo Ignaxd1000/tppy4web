@@ -26,5 +26,5 @@ from .tasks import scheduler
 
 # optional parameters
 __version__ = "1.0.0"
-__author__ = "Alan Etkin <spametki@gmail.com>"
-__license__ = "MIT. Ver archivo LICENCIA"
+__author__ = "Ignaxd1000"
+__license__ = "Ninguna"
